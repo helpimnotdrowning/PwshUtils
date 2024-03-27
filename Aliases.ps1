@@ -166,7 +166,7 @@ function uls {
 			$input | & (Get-RealCommand ls) --color=auto @args
 		
 	} else {
-		ls --color=auto @args
+		& (Get-RealCommand ls) --color=auto @args
 		
 	}
 }
