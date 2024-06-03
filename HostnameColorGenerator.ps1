@@ -15,27 +15,33 @@ PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with
 PwshUtils. If not, see <https://www.gnu.org/licenses/>.
 #>
-
 function New-HostnameColor {
-	#write-host $env:net_helpimnotdrowning_HostnameColor
+	param(
+		[String] $Name = $(hostname)
+		
+	)
 	
-	# Turns out that spawning another PowerShell session inside of the one you are trying to launch and waiting for it to finish
-	#	can actually be quite annoying. This guard prevents an expensive generation when the variable is already present.
-	if (!$env:net_helpimnotdrowning_HostnameColor || $env:net_helpimnotdrowning_AlwaysGenerateNewHostnameColor) {
+	# Prevent expensive spawning of another Powershell session if not needed
+	if ((-not $env:nhnd_HostnameColor) -or($env:nhnd_AlwaysGenerateNewHostnameColor)) {
 		# Get hash of hostname with silly roundabout method since Powershell only lets us compute hashes for files/streams
-		$HostMD5Hash = Get-FileHash -Algorithm MD5 -InputStream ( [IO.MemoryStream]::new( [ byte[] ][ char[] ] (hostname) ) )
+		$HostMD5Hash = Get-FileHash -Algorithm MD5 -InputStream ( [IO.MemoryStream]::new( [ byte[] ][ char[] ] $Name ) )
 
-		$ColorSeed = [Int32]("0x" + $HostMD5Hash.Hash.ToLower()[0..7] -replace " ", "" ) # UInt64 sinc MD5 is 128 bits
-
+		$ColorSeed = [Int32]("0x" + $HostMD5Hash.Hash[0..7] -replace " ", "" )
+		
+		Write-Host $Name $HostMD5Hash.Hash $ColorSeed.toString('X')
+		
 		# Create a new PowerShell instance to do our "math" inside
 		#	This is needed because "Get-Random -SetSeed" changes the seed for the lifetime of the session -- using a new session
 		#	prevents this from affecting the main instance. The R, G, & B channels are generated with the seed derived from the
 		#	hostname and saved as an RGB color.
-		$env:net_helpimnotdrowning_HostnameColor = (pwsh -NoProfile -Command {
-			"#" +
+		$env:nhnd_HostnameColor = (pwsh -NoProfile -Command {
+			return '#' +
+			# not used, gives lots of muddy greys; getting random for R, G & B
+			# *seems* to be more random and gives nicer colors
+			#(Get-Random -Minimum 0x0 -Maximum 0xFFFFFF -SetSeed $Args[0]).toString('X').PadLeft(6, '0')
 			(Get-Random -Minimum 0x0 -Maximum 0xFF -SetSeed $Args[0]).toString("X").PadLeft(2, '0') +
-			(Get-Random -Minimum 0x0 -Maximum 0xFF).toString("X").PadLeft(2, '0') +
-			(Get-Random -Minimum 0x0 -Maximum 0xFF).toString("X").PadLeft(2, '0')
+			(Get-Random -Minimum 0x0 -Maximum 0xFF                  ).toString("X").PadLeft(2, '0') +
+			(Get-Random -Minimum 0x0 -Maximum 0xFF                  ).toString("X").PadLeft(2, '0')
 		} -Args $ColorSeed )
 
 		# * But why the hostname? It's the only identifier I knew could be consistent from machine to machine;

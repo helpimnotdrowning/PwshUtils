@@ -20,10 +20,9 @@ function ConvertTo-Base64 {
 	[Alias("base64")]
 	param (
 		[Parameter(Mandatory, ValueFromPipeline, ParameterSetName="StringInput")]
-        [AllowEmptyString]
+		[AllowEmptyString()]
 		[String] $String,
 		
-        
 		[Switch] $SplitTo76
 	)
 	

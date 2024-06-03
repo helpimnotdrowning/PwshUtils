@@ -66,7 +66,7 @@ function New-AdvancedAlias {
 		some reason.
 	#>
 	
-	New-Item -Path Function:\ -Name "global:__net_helpimnotdrowning_advancedalias_generated_func_$RandomID" -Value {
+	New-Item -Path Function:\ -Name "global:nhnd_advancedalias_generated_func_$RandomID" -Value {
 		if ($MyInvocation.ExpectingInput) {
 			# man FUCK this language; see external comment above declaration for my rant
 			(Get-Item Variable:\input).Value
@@ -114,6 +114,6 @@ function New-AdvancedAlias {
 		
 	}.GetNewClosure() | Out-Null
 	
-	New-Alias -Name $Name -Value "global:__net_helpimnotdrowning_advancedalias_generated_func_$RandomID" -Description $Description -Scope 1 -Force
+	New-Alias -Name $Name -Value "global:nhnd_advancedalias_generated_func_$RandomID" -Description $Description -Scope 1 -Force
 	
 }

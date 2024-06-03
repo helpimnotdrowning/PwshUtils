@@ -112,11 +112,14 @@ function ConvertTo-AnsiColorCode {
             
         # just a pile of characters, add 0x prefix
         } else {
-            $Color = [Int]("0x$ColorString")
+            $Color = [Int]"0x$ColorString"
         
         }
         
-    } elseif ($Red -and $Green -and $Blue) {
+    } elseif ($Color) {
+        #
+        
+    } else {
         # add together channels to form full color
         $Color = ($Red -shl 16) + ($Green -shl 8) + ($Blue)
         

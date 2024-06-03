@@ -99,7 +99,8 @@ function iidea {
 function clion {
 	if ($IsWindows) {
 		# installed as user, then pick last item to launch latest version (idk system path)
-		$CLionPath = "$((Get-Item "$env:LOCALAPPDATA/JetBrains/CLion*")[-1])/bin/clion.bat"
+		#$CLionPath = "$((Get-Item "$env:LOCALAPPDATA/JetBrains/CLion*")[-1])/bin/clion.bat"
+		$CLionPath = "$((Get-Item "${env:ProgramFiles(x86)}/JetBrains/CLion*")[-1])/bin/clion.bat"
 		
 	} elseif ($IsLinux) {
 		# installed in opt, then pick last item to launch latest version
