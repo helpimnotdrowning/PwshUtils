@@ -46,7 +46,7 @@ function Start-DetachedProcess {
 # KDE/Linux: restarts plasma
 function Restart-DesktopEnvironment {
 	if ($IsWindows) {
-		Get-Process | Where-Object {$_.Path -match "C:\\WINDOWS\\explorer.exe"} | Stop-Process
+		Get-Process | ? { $_.Path -eq "C:\WINDOWS\explorer.exe" } | Stop-Process
 		explorer
 		
 	} elseif ($IsKDELinux) {

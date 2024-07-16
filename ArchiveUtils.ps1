@@ -19,21 +19,21 @@ PwshUtils. If not, see <https://www.gnu.org/licenses/>.
 function Get-ArchiveTypeFromName {
 	param (
 		[String] $Name
-
+		
 	)
-
+	
 	$SplitName = $Name -split "\."
-
+	
 	if ($SplitName[-1] -ieq "tar" || $SplitName[-2] -ieq "tar") {
 		return "tar"
-
+		
 	} elseif ($SplitName[-1] -ieq "zip") {
 		return "zip"
-
+		
 	} else {
 		Write-Warning "Could not determine archive type from extension for `"$Name`"! Defaulting to `"tar`"."
 		return "tar"
-
+		
 	}
 }
 
@@ -44,29 +44,29 @@ function Compress-XArchive {
 		[Switch] $Force,
 		[Switch] $Confirm,
 		[Switch] $PassThru,
-
+		
 		[ValidateSet("Automatic", "tar", "zip")]
 		[String] $Backend = "Automatic"
-
+		
 	)
-
+	
 	if ($Confirm) {
 		Remove-Item -Path $DestinationPath -Confirm -ErrorAction Ignore
-
+		
 	} else {
 		Remove-Item -Path $DestinationPath -ErrorAction Ignore
-
+		
 	}
-
-
+	
+	
 	if (($Backend -ieq "tar") -or (Get-ArchiveTypeFromName -Name $DestinationPath) -ieq "tar") {
 		# let tar auto determine compression method from filename
 		$Paths.Name | tar --posix --auto-compress --create --recursion --file $DestinationPath --files-from -
-
+		
 	} elseif (($Backend -ieq "zip") -or (Get-ArchiveTypeFromName -Name $DestinationPath) -ieq "zip") {
 		echo "$($Paths.Name) | zip --recurse-paths -@ $DestinationPath"
 		$Paths.Name | zip --recurse-paths -@ $DestinationPath
-
-
+		
+		
 	}
 }

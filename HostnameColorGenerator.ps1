@@ -25,7 +25,7 @@ function New-HostnameColor {
 	if ((-not $env:nhnd_HostnameColor) -or($env:nhnd_AlwaysGenerateNewHostnameColor)) {
 		# Get hash of hostname with silly roundabout method since Powershell only lets us compute hashes for files/streams
 		$HostMD5Hash = Get-FileHash -Algorithm MD5 -InputStream ( [IO.MemoryStream]::new( [ byte[] ][ char[] ] $Name ) )
-
+		
 		$ColorSeed = [Int32]("0x" + $HostMD5Hash.Hash[0..7] -replace " ", "" )
 		
 		Write-Host $Name $HostMD5Hash.Hash $ColorSeed.toString('X')
@@ -43,7 +43,7 @@ function New-HostnameColor {
 			(Get-Random -Minimum 0x0 -Maximum 0xFF                  ).toString("X").PadLeft(2, '0') +
 			(Get-Random -Minimum 0x0 -Maximum 0xFF                  ).toString("X").PadLeft(2, '0')
 		} -Args $ColorSeed )
-
+		
 		# * But why the hostname? It's the only identifier I knew could be consistent from machine to machine;
 		#	an IP address can change at the will of the DHCP server, a MAC address / disk|motherboard|CPU|GPU|etc serial no. can
 		#	change with a hardware upgrade, but a human (or machine) defined name stays as long as the OS does (which is really all

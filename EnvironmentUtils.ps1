@@ -65,7 +65,9 @@ function Set-EnvironmentVariable {
 		# "Blocking" flag enabled, which blocks while it waits for all of its
 		# 1-second timeouts to expire!
 		# see https://stackoverflow.com/a/4826777 for more information
-		( { [Environment]::SetEnvironmentVariable($Name, $Value, $Scope) } ) | Out-Null
+		#
+		# nvm this causes Problems
+		[Environment]::SetEnvironmentVariable($Name, $Value, $Scope)
 		
 	} elseif ($IsLinux) {
 		Write-Warning "Environment changes are not standardized on Linux! Support is experimental and bash-only (probably)"
